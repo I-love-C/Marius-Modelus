@@ -1,0 +1,64 @@
+@startuml
+' Paramètres d'affichage
+hide circle
+skinparam linetype ortho
+skinparam EntityBackgroundColor #F9F9F9
+skinparam EntityBorderColor #333333
+
+' --- TABLES ---
+
+entity "Departement" as dept {
+  * code_departement : VARCHAR(2) <<PK>>
+  --
+  note: Contrainte CHECK IN ('44', '49', '79', '85')
+}
+
+entity "Commune" as commune {
+  * id_commune : SERIAL <<PK>>
+  --
+  * nom_commune : VARCHAR(255)
+  * code_departement : VARCHAR(2) <<FK>>
+}
+
+entity "Type_Acte" as type_acte {
+  * id_type_acte : SERIAL <<PK>>
+  --
+  * libelle : VARCHAR(100)
+  note: 7 types spécifiques
+}
+
+entity "Personne" as personne {
+  * id_personne : SERIAL <<PK>>
+  --
+  nom : VARCHAR(255)
+  prenom : VARCHAR(255)
+  id_pere : INT <<FK>>
+  id_mere : INT <<FK>>
+}
+
+entity "Acte" as acte {
+  * id_acte : VARCHAR(50) <<PK>>
+  --
+  date_acte : DATE
+  num_vue : INT
+  * id_type_acte : INT <<FK>>
+  * id_commune : INT <<FK>>
+  * id_personne_A : INT <<FK>>
+  * id_personne_B : INT <<FK>>
+}
+
+' --- RELATIONS ---
+
+dept "1" -- "0..N" commune : contient >
+commune "1" -- "0..N" acte : a lieu dans >
+type_acte "1" -- "0..N" acte : definit >
+
+' Relations de généalogie (auto-référencement)
+personne "0..N" -up- "0..1" personne : a pour père >
+personne "0..N" -up- "0..1" personne : a pour mère >
+
+' Relations entre les actes et les personnes mariées
+personne "1" -- "0..N" acte : est Conjoint A >
+personne "1" -- "0..N" acte : est Conjoint B >
+
+@enduml

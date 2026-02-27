@@ -1,0 +1,68 @@
+S5/Modélisation de bases de données/projet took 7s
+❯ sudo -u postgres psql
+ATTENTION:  database "postgres" has a collation version mismatch
+DÉTAIL : The database was created using collation version 2.41, but the operating system provides version 2.42.
+ASTUCE : Rebuild all objects in this database that use the default collation and run ALTER DATABASE postgres REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+psql (18.1 (Debian 18.1-2))
+Saisissez « help » pour l'aide.
+
+postgres=# \l
+                                                          Liste des bases de données
+    Nom    | Propriétaire | Encodage | Fournisseur de locale | Collationnement | Type caract. | Locale | Règles ICU : |    Droits d'accès
+-----------+--------------+----------+-----------------------+-----------------+--------------+--------+--------------+-----------------------
+ postgres  | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              |
+ template0 | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              | =c/postgres          +
+           |              |          |                       |                 |              |        |              | postgres=CTc/postgres
+ template1 | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              | =c/postgres          +
+           |              |          |                       |                 |              |        |              | postgres=CTc/postgres
+(3 lignes)
+
+postgres=# CREATE DATABASE projet_genealogie;
+ERREUR:  template database "template1" has a collation version mismatch
+DÉTAIL : The template database was created using collation version 2.41, but the operating system provides version 2.42.
+ASTUCE : Rebuild all objects in the template database that use the default collation and run ALTER DATABASE template1 REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+postgres=# \l
+                                                          Liste des bases de données
+    Nom    | Propriétaire | Encodage | Fournisseur de locale | Collationnement | Type caract. | Locale | Règles ICU : |    Droits d'accès
+-----------+--------------+----------+-----------------------+-----------------+--------------+--------+--------------+-----------------------
+ postgres  | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              |
+ template0 | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              | =c/postgres          +
+           |              |          |                       |                 |              |        |              | postgres=CTc/postgres
+ template1 | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              | =c/postgres          +
+           |              |          |                       |                 |              |        |              | postgres=CTc/postgres
+(3 lignes)
+
+postgres=# ALTER DATABASE template1 REFRESH COLLATION VERSION;
+NOTICE:  changement de version de 2.41 à 2.42
+ALTER DATABASE
+postgres=# ALTER DATABASE postgres REFRESH COLLATION VERSION;
+NOTICE:  changement de version de 2.41 à 2.42
+ALTER DATABASE
+postgres=# CREATE DATABASE projet_genealogie;
+CREATE DATABASE
+postgres=# \l
+                                                              Liste des bases de données
+        Nom        | Propriétaire | Encodage | Fournisseur de locale | Collationnement | Type caract. | Locale | Règles ICU : |    Droits d'accès
+-------------------+--------------+----------+-----------------------+-----------------+--------------+--------+--------------+-----------------------
+ postgres          | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              |
+ projet_genealogie | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              |
+ template0         | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              | =c/postgres          +
+                   |              |          |                       |                 |              |        |              | postgres=CTc/postgres
+ template1         | postgres     | UTF8     | libc                  | fr_FR.UTF-8     | fr_FR.UTF-8  |        |              | =c/postgres          +
+                   |              |          |                       |                 |              |        |              | postgres=CTc/postgres
+(4 lignes)
+
+postgres=# \c projet_genealogie
+Vous êtes maintenant connecté à la base de données « projet_genealogie » en tant qu'utilisateur « postgres ».
+projet_genealogie=# \dt
+              Liste des tables
+ Schéma |     Nom     | Type  | Propriétaire
+--------+-------------+-------+--------------
+ public | acte        | table | postgres
+ public | commune     | table | postgres
+ public | departement | table | postgres
+ public | personne    | table | postgres
+ public | type_acte   | table | postgres
+(5 lignes)
+
+projet_genealogie=#
